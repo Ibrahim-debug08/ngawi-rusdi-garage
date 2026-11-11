@@ -978,3 +978,55 @@ function escapeHtml(str) {
   div.textContent = str;
   return div.innerHTML;
 }
+
+// ==================== DEMO DATA SEEDER ====================
+async function seedSampleMotorcycles() {
+  const samples = [
+    {
+      customer_name: "Rizky Ramadhan",
+      customer_phone: "08139876543",
+      motorcycle_brand: "Yamaha",
+      motorcycle_type: "Aerox 155 Connected",
+      plate_number: "AE 7788 NK",
+      year: "2024",
+      color: "Cyber City Cyan",
+      service_ids: [1, 7], // Service Ringan + Service CVT
+      complaint: "Ganti oli sekalian gredek saat rpm bawah",
+      mechanic_name: "Mas Rusdi"
+    },
+    {
+      customer_name: "Dimas Anggara",
+      customer_phone: "08571234990",
+      motorcycle_brand: "Kawasaki",
+      motorcycle_type: "Ninja ZX-25R",
+      plate_number: "AE 2500 RR",
+      year: "2023",
+      color: "KRT Lime Green",
+      service_ids: [2, 4], // Tune Up Besar + Service Injeksi
+      complaint: "Persiapan balap sirkuit, kalibrasi ECU dan servis injektor",
+      mechanic_name: "Pak Eko"
+    },
+    {
+      customer_name: "Siti Rahmawati",
+      customer_phone: "08215544332",
+      motorcycle_brand: "Honda",
+      motorcycle_type: "Vario 160 ABS",
+      plate_number: "AE 6160 VR",
+      year: "2023",
+      color: "Matte Black",
+      service_ids: [8, 3], // Ganti Kampas Rem + Ganti Ban
+      complaint: "Rem belakang bunyi decit dan ban depan mulai gundul",
+      mechanic_name: "Mas Rusdi"
+    }
+  ];
+
+  try {
+    for (const sample of samples) {
+      await apiPost('/api/work-orders', sample);
+    }
+    showToast('🚀 3 data sample berhasil ditambahkan!', 'success');
+    refreshCurrentPage();
+  } catch (err) {
+    showToast('Gagal menambahkan sample data: ' + err.message, 'error');
+  }
+}
