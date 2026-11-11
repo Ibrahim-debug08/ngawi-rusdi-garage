@@ -1,0 +1,7 @@
+node_modules/
+bengkel.db
+bengkel.db-journal
+bengkel.db-wal
+bengkel.db-shm
+.DS_Store
+*.log

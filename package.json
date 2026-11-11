@@ -1,0 +1,22 @@
+{
+  "name": "ngawi-rusdi-garage",
+  "version": "1.0.0",
+  "description": "Sistem Manajemen Bengkel Motor - Ngawi Rusdi Garage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "bengkel",
+    "motor",
+    "manajemen",
+    "garage",
+    "racing"
+  ],
+  "author": "Ngawi Rusdi Garage",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

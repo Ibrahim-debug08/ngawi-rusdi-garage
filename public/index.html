@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngawi Rusdi Garage - Sistem Manajemen Bengkel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏍️</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">🏍️</span>
+        <h1>Ngawi <span>Rusdi</span> Garage</h1>
+        <div class="tagline">Speed • Power • Trust</div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu Utama</div>
+        <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item" data-page="registrasi" onclick="navigateTo('registrasi')">
+          <span class="nav-icon">📝</span>
+          <span>Registrasi</span>
+        </div>
+        <div class="nav-item" data-page="antrian" onclick="navigateTo('antrian')">
+          <span class="nav-icon">📋</span>
+          <span>Daftar Antrian</span>
+          <span class="nav-badge" id="activeCount">0</span>
+        </div>
+        
+        <div class="nav-section-title">Informasi</div>
+        <div class="nav-item" data-page="layanan" onclick="navigateTo('layanan')">
+          <span class="nav-icon">🔧</span>
+          <span>Layanan Kami</span>
+        </div>
+        <div class="nav-item" data-page="riwayat" onclick="navigateTo('riwayat')">
+          <span class="nav-icon">📜</span>
+          <span>Riwayat & Laporan</span>
+        </div>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <p>© 2026 Ngawi Rusdi Garage</p>
+        <p>v1.0.0</p>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="btn-mobile-menu" onclick="toggleSidebar()">☰</button>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="header-right">
+          <span class="header-time" id="headerTime"></span>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- ==================== PAGE: DASHBOARD ==================== -->
+        <section class="page-section active" id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card red">
+              <div class="stat-icon">🏍️</div>
+              <div class="stat-value" id="statActive">0</div>
+              <div class="stat-label">Kendaraan Aktif</div>
+              <div class="stat-sub">Sedang dalam proses</div>
+            </div>
+            <div class="stat-card gold">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-value" id="statAntrian">0</div>
+              <div class="stat-label">Dalam Antrian</div>
+              <div class="stat-sub">Menunggu dikerjakan</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">✅</div>
+              <div class="stat-value" id="statCompleted">0</div>
+              <div class="stat-label">Selesai Hari Ini</div>
+              <div class="stat-sub">Sudah dikerjakan</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-icon">💰</div>
+              <div class="stat-value" id="statRevenue">Rp 0</div>
+              <div class="stat-label">Pendapatan Hari Ini</div>
+              <div class="stat-sub">Total transaksi hari ini</div>
+            </div>
+          </div>
+
+          <h3 class="mb-2" style="font-size: 16px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Status Pengerjaan</h3>
+          <div class="status-overview">
+            <div class="status-card" onclick="navigateTo('antrian'); filterByStatus('antrian')">
+              <div class="status-count" style="color: var(--warning);" id="countAntrian">0</div>
+              <div class="status-name">⏳ Antrian</div>
+            </div>
+            <div class="status-card" onclick="navigateTo('antrian'); filterByStatus('dikerjakan')">
+              <div class="status-count" style="color: var(--info);" id="countDikerjakan">0</div>
+              <div class="status-name">🔧 Dikerjakan</div>
+            </div>
+            <div class="status-card" onclick="navigateTo('antrian'); filterByStatus('menunggu_part')">
+              <div class="status-count" style="color: #FF9800;" id="countPart">0</div>
+              <div class="status-name">📦 Menunggu Part</div>
+            </div>
+            <div class="status-card" onclick="navigateTo('antrian'); filterByStatus('selesai')">
+              <div class="status-count" style="color: var(--success);" id="countSelesai">0</div>
+              <div class="status-name">✅ Selesai</div>
+            </div>
+            <div class="status-card" onclick="navigateTo('antrian'); filterByStatus('diambil')">
+              <div class="status-count" style="color: #adb5bd;" id="countDiambil">0</div>
+              <div class="status-name">🏠 Diambil</div>
+            </div>
+          </div>
+
+          <div class="checkered-divider"></div>
+
+          <div class="table-container mt-2">
+            <div class="table-header">
+              <h3>🔥 Kendaraan Aktif Terbaru</h3>
+            </div>
+            <div id="dashboardRecentOrders">
+              <div class="empty-state">
+                <div class="empty-icon">🏍️</div>
+                <h3>Belum Ada Kendaraan</h3>
+                <p>Belum ada kendaraan yang terdaftar. Mulai dengan mendaftarkan kendaraan baru.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE: REGISTRASI ==================== -->
+        <section class="page-section" id="page-registrasi">
+          <form id="registrationForm" onsubmit="submitRegistration(event)">
+            <div class="form-section">
+              <div class="form-section-title">👤 Data Pelanggan</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Nama Pelanggan <span class="required">*</span></label>
+                  <input type="text" class="form-control" id="customerName" placeholder="Masukkan nama pelanggan" required>
+                </div>
+                <div class="form-group">
+                  <label>No. Telepon</label>
+                  <input type="tel" class="form-control" id="customerPhone" placeholder="08xxxxxxxxxx">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">🏍️ Data Kendaraan</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Merk Motor <span class="required">*</span></label>
+                  <select class="form-control" id="motorcycleBrand" required>
+                    <option value="">Pilih Merk</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Yamaha">Yamaha</option>
+                    <option value="Suzuki">Suzuki</option>
+                    <option value="Kawasaki">Kawasaki</option>
+                    <option value="TVS">TVS</option>
+                    <option value="KTM">KTM</option>
+                    <option value="Benelli">Benelli</option>
+                    <option value="Vespa">Vespa</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Tipe Motor <span class="required">*</span></label>
+                  <input type="text" class="form-control" id="motorcycleType" placeholder="Contoh: Beat Street 2023" required>
+                </div>
+                <div class="form-group">
+                  <label>No. Plat</label>
+                  <input type="text" class="form-control" id="plateNumber" placeholder="Contoh: AE 1234 XX" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                  <label>Tahun</label>
+                  <input type="text" class="form-control" id="motorcycleYear" placeholder="Contoh: 2023" maxlength="4">
+                </div>
+                <div class="form-group">
+                  <label>Warna Motor</label>
+                  <input type="text" class="form-control" id="motorcycleColor" placeholder="Contoh: Hitam Doff">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">🔧 Pilih Layanan <span class="required">*</span></div>
+              <div class="service-select-grid" id="serviceSelectGrid">
+                <!-- Services will be loaded here dynamically -->
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">📝 Keluhan / Catatan</div>
+              <div class="form-group">
+                <label>Keluhan Kerusakan / Catatan Tambahan</label>
+                <textarea class="form-control" id="complaint" placeholder="Jelaskan keluhan atau kerusakan motor (opsional)..." rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Nama Mekanik (Opsional)</label>
+                <input type="text" class="form-control" id="mechanicName" placeholder="Nama mekanik yang ditugaskan">
+              </div>
+            </div>
+
+            <div class="form-section" style="background: transparent; border: none; padding: 0; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <p class="text-muted" style="font-size: 14px;">Estimasi Biaya: <strong class="text-gold" id="estimatedCost">Rp 0</strong></p>
+              </div>
+              <div style="display: flex; gap: 12px;">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
+                <button type="submit" class="btn btn-primary btn-lg">🏁 Daftarkan Kendaraan</button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- ==================== PAGE: ANTRIAN ==================== -->
+        <section class="page-section" id="page-antrian">
+          <div class="filter-bar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="searchInput" placeholder="Cari nama, plat, atau tipe motor..." oninput="loadWorkOrders()">
+            </div>
+            <div class="filter-btn-group" id="filterButtons">
+              <button class="filter-btn active" onclick="filterByStatus('semua')">Semua</button>
+              <button class="filter-btn" onclick="filterByStatus('antrian')">⏳ Antrian</button>
+              <button class="filter-btn" onclick="filterByStatus('dikerjakan')">🔧 Dikerjakan</button>
+              <button class="filter-btn" onclick="filterByStatus('menunggu_part')">📦 Menunggu Part</button>
+              <button class="filter-btn" onclick="filterByStatus('selesai')">✅ Selesai</button>
+              <button class="filter-btn" onclick="filterByStatus('diambil')">🏠 Diambil</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header">
+              <h3>📋 Daftar Work Order</h3>
+              <button class="btn btn-primary btn-sm" onclick="navigateTo('registrasi')">+ Tambah Baru</button>
+            </div>
+            <div id="workOrdersTable">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>Tidak Ada Data</h3>
+                <p>Belum ada work order yang terdaftar.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PAGE: LAYANAN ==================== -->
+        <section class="page-section" id="page-layanan">
+          <div style="margin-bottom: 24px;">
+            <h3 style="font-size: 20px; margin-bottom: 8px;">🔧 Layanan & Jasa Bengkel</h3>
+            <p class="text-muted">Berikut adalah daftar layanan yang tersedia di Ngawi Rusdi Garage</p>
+          </div>
+          <div class="services-grid" id="servicesGrid">
+            <!-- Services cards loaded dynamically -->
+          </div>
+        </section>
+
+        <!-- ==================== PAGE: RIWAYAT ==================== -->
+        <section class="page-section" id="page-riwayat">
+          <div class="stats-grid" style="margin-bottom: 32px;">
+            <div class="stat-card red">
+              <div class="stat-icon">📊</div>
+              <div class="stat-value" id="reportTotal">0</div>
+              <div class="stat-label">Total Work Order</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">💰</div>
+              <div class="stat-value" id="reportRevenue">Rp 0</div>
+              <div class="stat-label">Total Pendapatan</div>
+            </div>
+            <div class="stat-card gold">
+              <div class="stat-icon">⚠️</div>
+              <div class="stat-value" id="reportPending">0</div>
+              <div class="stat-label">Belum Dibayar</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header">
+              <h3>📜 Riwayat Kendaraan Selesai & Diambil</h3>
+            </div>
+            <div id="historyTable">
+              <div class="empty-state">
+                <div class="empty-icon">📜</div>
+                <h3>Belum Ada Riwayat</h3>
+                <p>Riwayat kendaraan selesai akan muncul di sini.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: STATUS UPDATE ==================== -->
+  <div class="modal-overlay" id="modalStatus">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🔄 Update Status Pengerjaan</h3>
+        <button class="modal-close" onclick="closeModal('modalStatus')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-grid" id="statusDetailGrid">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="form-group">
+          <label>Status Pengerjaan</label>
+          <select class="form-control" id="newStatus">
+            <option value="antrian">⏳ Antrian</option>
+            <option value="dikerjakan">🔧 Sedang Dikerjakan</option>
+            <option value="menunggu_part">📦 Menunggu Part</option>
+            <option value="selesai">✅ Selesai</option>
+            <option value="diambil">🏠 Sudah Diambil</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nama Mekanik</label>
+          <input type="text" class="form-control" id="statusMechanic" placeholder="Nama mekanik">
+        </div>
+        <div class="form-group">
+          <label>Catatan Pengerjaan</label>
+          <textarea class="form-control" id="statusNotes" placeholder="Catatan progress pengerjaan..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalStatus')">Batal</button>
+        <button class="btn btn-primary" onclick="updateStatus()">💾 Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DETAIL ORDER ==================== -->
+  <div class="modal-overlay" id="modalDetail">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3>📋 Detail Work Order</h3>
+        <button class="modal-close" onclick="closeModal('modalDetail')">&times;</button>
+      </div>
+      <div class="modal-body" id="detailContent">
+        <!-- Filled dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalDetail')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PAYMENT ==================== -->
+  <div class="modal-overlay" id="modalPayment">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>💳 Proses Pembayaran</h3>
+        <button class="modal-close" onclick="closeModal('modalPayment')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="paymentDetails">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="form-group mt-2">
+          <label>Metode Pembayaran</label>
+          <select class="form-control" id="paymentMethod">
+            <option value="cash">💵 Cash / Tunai</option>
+            <option value="transfer">🏦 Transfer Bank</option>
+            <option value="qris">📱 QRIS</option>
+            <option value="dana">📱 Dana</option>
+            <option value="gopay">📱 GoPay</option>
+            <option value="ovo">📱 OVO</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalPayment')">Batal</button>
+        <button class="btn btn-success" onclick="processPayment()">✅ Konfirmasi Pembayaran</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: RECEIPT ==================== -->
+  <div class="modal-overlay" id="modalReceipt">
+    <div class="modal" style="max-width: 480px; background: transparent; border: none;">
+      <div id="receiptContent">
+        <!-- Receipt will be generated here -->
+      </div>
+      <div style="display: flex; justify-content: center; gap: 12px; margin-top: 16px;">
+        <button class="btn btn-secondary" onclick="closeModal('modalReceipt')">Tutup</button>
+        <button class="btn btn-primary" onclick="printReceipt()">🖨️ Cetak Struk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADDITIONAL COST ==================== -->
+  <div class="modal-overlay" id="modalCost">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>💰 Biaya Tambahan</h3>
+        <button class="modal-close" onclick="closeModal('modalCost')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Biaya Tambahan (Rp)</label>
+          <input type="number" class="form-control" id="additionalCost" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>Keterangan Biaya Tambahan</label>
+          <textarea class="form-control" id="additionalNotes" placeholder="Contoh: Ganti spare part kampas rem, dll..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalCost')">Batal</button>
+        <button class="btn btn-primary" onclick="saveAdditionalCost()">💾 Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DELETE CONFIRMATION ==================== -->
+  <div class="modal-overlay" id="modalDelete">
+    <div class="modal" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3>⚠️ Konfirmasi Hapus</h3>
+        <button class="modal-close" onclick="closeModal('modalDelete')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 15px; line-height: 1.6;">Apakah Anda yakin ingin menghapus work order ini? Data yang dihapus tidak dapat dikembalikan.</p>
+        <div class="detail-grid mt-2" id="deleteDetailGrid">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalDelete')">Batal</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">🗑️ Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
